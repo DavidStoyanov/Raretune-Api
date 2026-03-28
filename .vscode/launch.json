@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Express (TS)",
+      "runtimeExecutable": "ts-node",
+      "runtimeArgs": [
+        "--transpile-only"
+      ],
+      "args": [
+        "${workspaceFolder}/src/index.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
+      },
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}

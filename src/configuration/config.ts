@@ -38,7 +38,7 @@ export const CONFIG = {
     JWT_SECRET: "j(*J2HE7E@!7JKJHJD(@jZasehs1N(HS1seh12434",
     SESSION_SECRET: "J(h1294(UH9j+_)JPZ)sd)da92AJE1aJ@AHSJP*081-0",
     AUTH_COOKIE_NAME: "auth",
-    VALIDATE_DB_SCHEMA: true,
+    VALIDATE_DB_SCHEMA: false,
 };
 
 CONFIG.ENV = CONFIG[env] as Env;

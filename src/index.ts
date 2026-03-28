@@ -4,8 +4,9 @@ import cors from 'cors';
 import CONFIG from "./configuration/config";
 import { DB } from "./configuration/database";
 import { configureExpress } from "./configuration/express";
-import { errorHandler } from "./utils/err-handler";
-import { homeRoute } from "./routes/home";
+import { errorHandler } from "./utils/error-handler";
+
+import routerApi from './routes/index'; 
 
 (async () => {
     const app: Application = express();
@@ -24,7 +25,7 @@ import { homeRoute } from "./routes/home";
     //Middlewares
 
     //Routes
-    app.get("/", homeRoute);
+    app.use("", routerApi);
 
     //Error
     app.use(errorHandler);

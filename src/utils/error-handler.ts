@@ -1,4 +1,4 @@
-import { Request, Response, /*NextFunction*/ } from "express";
+import { Request, Response, NextFunction } from "express";
 
 export class HttpError extends Error {
     status: number;
@@ -13,7 +13,8 @@ export function errorHandler(
     err: HttpError,
     req: Request,
     res: Response,
-    //next: NextFunction
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _next: NextFunction
 ) {
     const status = err.status || 500;
 
