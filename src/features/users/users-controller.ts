@@ -95,9 +95,33 @@ function logout(req: Request, res: Response) {
         .catch(err => res.send(err));
 }
 
+function getProfileInfo(req: Request, res: Response, next: NextFunction) {
+    const { id: userId } = req.user;
+
+    User.findOne({ _id: userId }, { password: 0, __v: 0 }) //finding by Id and returning without password and __v
+            .then(user => { res.status(200).json(user); console.log(user) })
+            .catch(next); 
+}
+
+function editProfileInfo(req: Request, res: Response, next: NextFunction) {
+    const { id: userId } = req.user;
+    const { username, email } = req.body;
+
+    const userPatch = {
+        ...(username != null && { username }),
+        ...(email != null && { email })
+    };
+
+    User.findOneAndUpdate({ _id: userId }, userPatch, { runValidators: true, new: true })
+            .then(x => { res.status(200).json(x) })
+            .catch(next);
+}
+
 
 export {
     register,
     login,
     logout,
+    getProfileInfo,
+    editProfileInfo,
 }

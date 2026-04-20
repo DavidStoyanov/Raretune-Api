@@ -4,7 +4,7 @@ import cors from 'cors';
 import CONFIG from "./configuration/config";
 import { DB } from "./configuration/database";
 import { configureExpress } from "./configuration/express";
-import { errorHandler } from "./utils/error-handler";
+import { errorHandler } from "./middlewares/error-handler";
 
 import routerApi from './routes/index'; 
 

@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
+export interface AppError extends Error {
+    status?: number;
+}
+
 export class HttpError extends Error {
     status: number;
 
@@ -10,26 +14,20 @@ export class HttpError extends Error {
 }
 
 export function errorHandler(
-    err: HttpError,
+    err: AppError,
     req: Request,
     res: Response,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _next: NextFunction
 ) {
-    const status = err.status || 500;
-
-    res.status(status).json({
-        status,
-        message: err.message,
-    });
+    console.error(err);
 
     if (err.status === 333) {
         res.status(333)
-            .json({ message: 'ErrorHandler: not allowed!' })
+            .json({ message: 'Not Allowed!' })
     } else {
         console.error(err.stack)
         // console.log(err)
         res.status(500)
-            .json({ message: 'ErrorHandler: Something went wrong!', err })
+            .json({ message: 'Internal Server Error!', err })
     }
 }
