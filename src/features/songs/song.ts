@@ -3,6 +3,8 @@ import { Schema, model } from 'mongoose';
 import CONFIG from '../../configuration/config';
 import { removeInnerProperties as rip } from '../../utils/object-utils';
 
+const { ObjectId } = Schema.Types;
+
 let songObj = {
     name: {
         type: String,
@@ -29,6 +31,10 @@ let songObj = {
     origin: {
         type: String,
         required: [false],
+    },
+    poster_id: {
+        type: ObjectId,
+        ref: "User"
     },
 }
 
