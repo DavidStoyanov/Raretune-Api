@@ -8,7 +8,7 @@ const tokenBlacklistSchema = new Schema(
     tokenBlacklistObj,
     {
         timestamps: {
-            createdAt: 'created_at',
+            createdAt: 'createdAt',
         },
         toJSON: {
             virtuals: true,

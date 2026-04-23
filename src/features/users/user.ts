@@ -12,8 +12,8 @@ export interface IUser {
     email: string;
     username: string;
     password?: string;
-    posted_songs: typeof ObjectId[];
-    own_songs: typeof ObjectId[];
+    postedSongs: typeof ObjectId[];
+    ownSongs: typeof ObjectId[];
     matchPassword(password: string): Promise<boolean>;
 }
 
@@ -39,11 +39,11 @@ let userObj = {
         minLength: [2, "Password should be at least 6 characters long"],
         maxLength: [30, "Password must not exceed 255 characters"],
     },
-    posted_songs: [{
+    postedSongs: [{
         type: ObjectId,
         ref: "Song",
     }],
-    own_songs: [{
+    ownSongs: [{
         type: ObjectId,
         ref: "Song",
     }],
@@ -59,8 +59,8 @@ const userSchema = new Schema(
     userObj,
     {
         timestamps: {
-            createdAt: 'created_at',
-            updatedAt: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
         },
         toJSON: {
             virtuals: true,

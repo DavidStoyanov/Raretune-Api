@@ -7,7 +7,7 @@ function getLatestsSongs(req: Request, res: Response, next: NextFunction) {
     const limit = Number(req.query.limit) || 0;
 
     Song.find()
-        .sort({ created_at: -1 })
+        .sort({ createdAt: -1 })
         .limit(limit)
         .then(songs => {
             res.status(200).json(songs)
@@ -30,7 +30,7 @@ function createSong(req: Request, res: Response, next: NextFunction) {
     const { id: userId } = req.user;
 
     Song.create({ name, description, creator, date, origin, user_id: userId })
-        .then((song) => User.findByIdAndUpdate(userId, { posted_songs: song.id }))
+        .then((song) => User.findByIdAndUpdate(userId, { postedSongs: song.id }))
         .then(() => res.status(200).json("Song created."))
         .catch(next);
 }
@@ -47,7 +47,7 @@ async function editSong(req: Request, res: Response, next: NextFunction) {
             throw new Error("Song not found");
         }
 
-        if (song.poster_id.toString() !== userId) {
+        if (song.posterId.toString() !== userId) {
             throw new Error("You are not the owner of this song");
         }
 
@@ -57,7 +57,7 @@ async function editSong(req: Request, res: Response, next: NextFunction) {
                 $set: {
                     name,
                     description,
-                    updated_at: Date.now()
+                    updatedAt: Date.now()
                 }
             }
         ); */
@@ -68,7 +68,7 @@ async function editSong(req: Request, res: Response, next: NextFunction) {
             creator,
             date,
             origin,
-            updated_at: Date.now()
+            updatedAt: Date.now()
         });
 
         await song.save();
@@ -92,7 +92,7 @@ async function deleteSong(req: Request, res: Response, next: NextFunction) {
             throw new Error("Song not found");
         }
 
-        if (song.poster_id.toString() !== userId) {
+        if (song.posterId.toString() !== userId) {
             throw new Error("You are not the owner of this song");
         }
 
@@ -100,7 +100,7 @@ async function deleteSong(req: Request, res: Response, next: NextFunction) {
 
         await User.updateOne(
             { _id: userId },
-            { $pull: { posted_songs: songId } }
+            { $pull: { postedSongs: songId } }
         );
 
         res.json({ message: "Song deleted successfully." });

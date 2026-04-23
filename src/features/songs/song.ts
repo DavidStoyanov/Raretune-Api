@@ -11,11 +11,11 @@ interface ISong {
     creator: string;
     date: string;
     origin: string;
-    poster_id: typeof ObjectId;
+    posterId: typeof ObjectId;
     creatorId: typeof ObjectId;
     likedBy?: typeof ObjectId[];
-    created_at?: Date;
-    updated_at?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 let songObj = {
@@ -45,7 +45,7 @@ let songObj = {
         type: String,
         required: [false],
     },
-    poster_id: {
+    posterId: {
         type: ObjectId,
         ref: "User"
     },
@@ -69,8 +69,8 @@ const songSchema = new Schema(
     songObj,
     {
         timestamps: {
-            createdAt: 'created_at',
-            updatedAt: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
         },
         toJSON: {
             virtuals: true,
