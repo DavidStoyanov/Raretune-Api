@@ -5,6 +5,19 @@ import { removeInnerProperties as rip } from '../../utils/object-utils';
 
 const { ObjectId } = Schema.Types;
 
+interface ISong {
+    name: string;
+    description: string;
+    creator: string;
+    date: string;
+    origin: string;
+    poster_id: typeof ObjectId;
+    creatorId: typeof ObjectId;
+    likedBy?: typeof ObjectId[];
+    created_at?: Date;
+    updated_at?: Date;
+}
+
 let songObj = {
     name: {
         type: String,
@@ -19,7 +32,7 @@ let songObj = {
         maxLength: [1000, "Song description must not exceed 1000 characters"],
     },
     creator: {
-        type: String,
+        type: String, //todo: remove
         required: [true, "Song creator name should be at least 2 characters long"],
         minLength: [2, "Song creator name should be at least 2 characters long"],
         maxLength: [30, "Song creator name must not exceed 30 characters"],
@@ -36,6 +49,14 @@ let songObj = {
         type: ObjectId,
         ref: "User"
     },
+    creatorId: {
+        type: ObjectId,
+        ref: "User" //todo: implement
+    },
+    likedBy: [{
+        type: ObjectId,
+        ref: "User"
+    }],
 }
 
 /** Enable/Disable validations for schema */
