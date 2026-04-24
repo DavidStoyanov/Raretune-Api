@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 import Song from './song';
 import User from "../users/user";
+import SongLike from "./song-like";
 
 function getLatestsSongs(req: Request, res: Response, next: NextFunction) {
     const limit = Number(req.query.limit) || 0;
@@ -127,8 +128,12 @@ async function likeSong(req: Request, res: Response, next: NextFunction) {
         }
 
         await (song.likedBy as unknown as string[]).push(userId as string);
-
         await song.save();
+
+        await SongLike.create({
+            userId,
+            songId: (songId as string)
+        });
 
         res.json({ message: "Song liked successfully." });
     } catch (err) {
@@ -156,6 +161,11 @@ async function dislikeSong(req: Request, res: Response, next: NextFunction) {
             { _id: songId },
             { $pull: { likedBy: userId } }
         );
+
+        await SongLike.deleteOne({
+            userId,
+            songId
+        });
 
         res.json({ message: "Song disliked successfully." });
     } catch (err) {
