@@ -4,7 +4,7 @@ import Song from './song';
 import User from "../users/user";
 import SongLike from "./song-like";
 
-function getLatestsSongs(req: Request, res: Response, next: NextFunction) {
+function getLatestSongs(req: Request, res: Response, next: NextFunction) {
     const limit = Number(req.query.limit) || 0;
 
     Song.find()
@@ -15,6 +15,54 @@ function getLatestsSongs(req: Request, res: Response, next: NextFunction) {
         })
         .catch(next);
 }
+
+async function getLatestThreeSongs(req: Request, res: Response, next: NextFunction) {
+    const { id: userId } = req.user;
+    const criteria: string | unknown = req.query.criteria;
+
+    const findLastThreeLikedSongs = async () => {
+        try {
+            const liked = await SongLike.find({ userId })
+                .sort({ likedAt: -1 })
+                .limit(3)
+                .select('songId');
+
+            const songIds: string[] = liked.map(like => {
+                return like.songId.toString();
+            });
+
+            const songs = await Song.find({ _id: { $in: songIds } })
+                .limit(3);
+
+            res.status(200).json(songs);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+
+    const findLastThreePostedSongs = async () => {
+        try {
+            const songs = await Song.find({ posterId: userId })
+                .sort({ createdAt: -1 })
+                .limit(3);
+
+            res.status(200).json(songs);
+        } catch (err) {
+            next(err);
+        }
+    };
+
+
+    switch (criteria) {
+        case 'liked': await findLastThreeLikedSongs(); return;
+        case 'posted': await findLastThreePostedSongs(); return;
+        default: next(new Error("Invalid criteria on getLatestThreeSongs()"));
+    }
+
+
+}
+
 
 function findSongById(req: Request, res: Response, next: NextFunction) {
     const { songId } = req.params;
@@ -30,7 +78,7 @@ function createSong(req: Request, res: Response, next: NextFunction) {
     const { name, description, creator, date, origin } = req.body;
     const { id: userId } = req.user;
 
-    Song.create({ name, description, creator, date, origin, user_id: userId })
+    Song.create({ name, description, creator, date, origin, posterId: userId })
         .then((song) => User.findByIdAndUpdate(userId, { postedSongs: song.id }))
         .then(() => res.status(200).json("Song created."))
         .catch(next);
@@ -177,7 +225,8 @@ async function dislikeSong(req: Request, res: Response, next: NextFunction) {
 
 
 export {
-    getLatestsSongs,
+    getLatestSongs,
+    getLatestThreeSongs,
     findSongById,
     createSong,
     editSong,
