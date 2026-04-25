@@ -39,11 +39,11 @@ let songObj = {
     },
     date: {
         type: String,
-        required: true,
+        required: false,
     },
     origin: {
         type: String,
-        required: true,
+        required: false,
     },
     posterId: {
         type: ObjectId,

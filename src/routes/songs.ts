@@ -3,7 +3,8 @@ import { Router } from 'express';
 import { 
     createSong, getLatestSongs, findSongById,
     editSong, deleteSong, likeSong,
-    dislikeSong, getLatestThreeSongs
+    dislikeSong, getLatestThreeSongs,
+    getCountForSongs, getFavoriteSongs
 } from '../features/songs/song-controller';
 import { auth } from '../middlewares/auth';
 
@@ -13,6 +14,8 @@ router.get('/', getLatestSongs);
 router.post('/', auth, createSong);
 
 router.get('/three', auth, getLatestThreeSongs);
+router.get('/count', auth, getCountForSongs);
+router.get('/favorites', auth, getFavoriteSongs);
 
 router.get('/:songId', findSongById);
 router.put('/:songId', auth, editSong);

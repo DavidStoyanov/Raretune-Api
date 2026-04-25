@@ -11,7 +11,20 @@ function getLatestSongs(req: Request, res: Response, next: NextFunction) {
         .sort({ createdAt: -1 })
         .limit(limit)
         .then(songs => {
-            res.status(200).json(songs)
+            res.status(200).json(songs);
+        })
+        .catch(next);
+}
+
+function getFavoriteSongs(req: Request, res: Response, next: NextFunction) {
+    const { id: userId } = req.user;
+    const limit = Number(req.query.limit) || 0;
+
+    Song.find({ likedBy: userId })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .then(songs => {
+            res.status(200).json(songs);
         })
         .catch(next);
 }
@@ -27,12 +40,38 @@ async function getLatestThreeSongs(req: Request, res: Response, next: NextFuncti
                 .limit(3)
                 .select('songId');
 
-            const songIds: string[] = liked.map(like => {
-                return like.songId.toString();
-            });
+            const songs = await Song.aggregate([
+                {
+                    $match: { _id: { $in: liked.map(x => x.songId) } }
+                },
+                {
+                    $lookup: {
+                        from: "songlikes",
+                        localField: "_id",
+                        foreignField: "songId",
+                        as: "songlike"
+                    }
+                },
+                {   $unwind: "$songlike" },
+                {   $sort: { "songlike.likedAt": -1 } },
+                {
+                    $group: {
+                        _id: "$_id",
+                        doc: { $first: "$$ROOT" }
+                    }
+                },
 
-            const songs = await Song.find({ _id: { $in: songIds } })
-                .limit(3);
+                { $replaceRoot: { newRoot: "$doc" } },
+                { $limit: 3 },
+                {
+                    $project: {
+                        id: "$_id",
+                        name: 1,
+                        description: 1,
+                        _id: 0,
+                    }
+                }
+            ]);
 
             res.status(200).json(songs);
         } catch (err) {
@@ -59,7 +98,6 @@ async function getLatestThreeSongs(req: Request, res: Response, next: NextFuncti
         case 'posted': await findLastThreePostedSongs(); return;
         default: next(new Error("Invalid criteria on getLatestThreeSongs()"));
     }
-
 
 }
 
@@ -152,10 +190,41 @@ async function deleteSong(req: Request, res: Response, next: NextFunction) {
             { $pull: { postedSongs: songId } }
         );
 
+        await SongLike.deleteMany({ songId });
+
         res.json({ message: "Song deleted successfully." });
     } catch (err) {
         console.error(err);
         next(err);
+    }
+}
+
+async function getCountForSongs(req: Request, res: Response, next: NextFunction) {
+    const { id: userId } = req.user;
+    const criteria: string | unknown = req.query.criteria;
+
+    const getCountForLikedSongs = async () => {
+        try {
+            const count = await SongLike.countDocuments({ userId });
+            res.status(200).json(count);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    const getCountForPostedSongs = async () => {
+        try {
+            const count = await Song.countDocuments({ posterId: userId });
+            res.status(200).json(count);
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    switch (criteria) {
+        case 'liked': await getCountForLikedSongs(); return;
+        case 'posted': await getCountForPostedSongs(); return;
+        default: next(new Error("Invalid criteria on getCountForSongs()"));
     }
 }
 
@@ -226,11 +295,13 @@ async function dislikeSong(req: Request, res: Response, next: NextFunction) {
 
 export {
     getLatestSongs,
+    getFavoriteSongs,
     getLatestThreeSongs,
     findSongById,
     createSong,
     editSong,
     deleteSong,
+    getCountForSongs,
     likeSong,
     dislikeSong
 }

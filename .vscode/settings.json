@@ -1,8 +1,7 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-},
-  "eslint.validate": [
-    "typescript"
-  ]
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "eslint.validate": ["typescript"],
+    "cSpell.words": ["songlikes"]
 }
