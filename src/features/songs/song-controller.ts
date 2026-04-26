@@ -114,10 +114,10 @@ function findSongById(req: Request, res: Response, next: NextFunction) {
 }
 
 function createSong(req: Request, res: Response, next: NextFunction) {
-    const { name, description, creator, date, origin } = req.body;
+    const { name, description, creator, date, origin, songUrl } = req.body;
     const { id: userId } = req.user;
 
-    Song.create({ name, description, creator, date, origin, posterId: userId })
+    Song.create({ name, description, creator, date, origin, songUrl, posterId: userId })
         .then((song) => User.findByIdAndUpdate(userId, { postedSongs: song.id }))
         .then(() => res.status(200).json("Song created."))
         .catch(next);

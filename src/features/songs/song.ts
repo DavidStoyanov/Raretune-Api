@@ -45,6 +45,10 @@ let songObj = {
         type: String,
         required: false,
     },
+    songUrl: {
+        type: String,
+        required: false,
+    },
     posterId: {
         type: ObjectId,
         ref: "User",
