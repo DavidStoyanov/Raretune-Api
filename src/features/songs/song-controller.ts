@@ -68,6 +68,7 @@ async function getLatestThreeSongs(req: Request, res: Response, next: NextFuncti
                         id: "$_id",
                         name: 1,
                         description: 1,
+                        creator: 1,
                         _id: 0,
                     }
                 }
@@ -291,6 +292,23 @@ async function dislikeSong(req: Request, res: Response, next: NextFunction) {
     }
 }
 
+async function getLiked(req: Request, res: Response, next: NextFunction) {
+    const { id: userId } = req.user;
+    const songIds = req.body;
+
+    try {
+        const likes = await SongLike.find({
+            songId: { $in: songIds },
+            userId
+        });
+
+        res.status(200).json(likes);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+}
+
 
 
 export {
@@ -303,5 +321,6 @@ export {
     deleteSong,
     getCountForSongs,
     likeSong,
-    dislikeSong
+    dislikeSong,
+    getLiked
 }

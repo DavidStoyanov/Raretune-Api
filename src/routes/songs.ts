@@ -4,7 +4,8 @@ import {
     createSong, getLatestSongs, findSongById,
     editSong, deleteSong, likeSong,
     dislikeSong, getLatestThreeSongs,
-    getCountForSongs, getFavoriteSongs
+    getCountForSongs, getFavoriteSongs,
+    getLiked
 } from '../features/songs/song-controller';
 import { auth } from '../middlewares/auth';
 
@@ -16,6 +17,7 @@ router.post('/', auth, createSong);
 router.get('/three', auth, getLatestThreeSongs);
 router.get('/count', auth, getCountForSongs);
 router.get('/favorites', auth, getFavoriteSongs);
+router.post('/songlikes', auth, getLiked);
 
 router.get('/:songId', findSongById);
 router.put('/:songId', auth, editSong);
