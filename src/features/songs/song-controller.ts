@@ -68,6 +68,7 @@ async function getLatestThreeSongs(req: Request, res: Response, next: NextFuncti
                         id: "$_id",
                         name: 1,
                         description: 1,
+                        creator: 1,
                         _id: 0,
                     }
                 }
@@ -113,10 +114,10 @@ function findSongById(req: Request, res: Response, next: NextFunction) {
 }
 
 function createSong(req: Request, res: Response, next: NextFunction) {
-    const { name, description, creator, date, origin } = req.body;
+    const { name, description, creator, date, origin, songUrl } = req.body;
     const { id: userId } = req.user;
 
-    Song.create({ name, description, creator, date, origin, posterId: userId })
+    Song.create({ name, description, creator, date, origin, songUrl, posterId: userId })
         .then((song) => User.findByIdAndUpdate(userId, { postedSongs: song.id }))
         .then(() => res.status(200).json("Song created."))
         .catch(next);
@@ -291,6 +292,23 @@ async function dislikeSong(req: Request, res: Response, next: NextFunction) {
     }
 }
 
+async function getLiked(req: Request, res: Response, next: NextFunction) {
+    const { id: userId } = req.user;
+    const songIds = req.body;
+
+    try {
+        const likes = await SongLike.find({
+            songId: { $in: songIds },
+            userId
+        });
+
+        res.status(200).json(likes);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+}
+
 
 
 export {
@@ -303,5 +321,6 @@ export {
     deleteSong,
     getCountForSongs,
     likeSong,
-    dislikeSong
+    dislikeSong,
+    getLiked
 }
