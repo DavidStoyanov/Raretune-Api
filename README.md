@@ -1,3 +1,11 @@
+# Raretune Api server
+
+### Start instructions:
+```
+npm i
+npm run dev
+```
+
 # Express + TypeScript - *(Backend Skeleton)*
 
 Simple backend starter using **Express**, **TypeScript**, **ESLint**, and **Prettier**.
