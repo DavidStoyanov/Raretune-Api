@@ -44,6 +44,7 @@ async function getLatestThreeSongs(req: Request, res: Response, next: NextFuncti
                 {
                     $match: { _id: { $in: liked.map(x => x.songId) } }
                 },
+                
                 {
                     $lookup: {
                         from: "songlikes",
@@ -52,8 +53,11 @@ async function getLatestThreeSongs(req: Request, res: Response, next: NextFuncti
                         as: "songlike"
                     }
                 },
+
                 {   $unwind: "$songlike" },
+
                 {   $sort: { "songlike.likedAt": -1 } },
+
                 {
                     $group: {
                         _id: "$_id",
@@ -62,7 +66,9 @@ async function getLatestThreeSongs(req: Request, res: Response, next: NextFuncti
                 },
 
                 { $replaceRoot: { newRoot: "$doc" } },
+
                 { $limit: 3 },
+
                 {
                     $project: {
                         id: "$_id",
@@ -125,7 +131,7 @@ function createSong(req: Request, res: Response, next: NextFunction) {
 
 async function editSong(req: Request, res: Response, next: NextFunction) {
     const { songId } = req.params;
-    const { name, description, creator, date, origin } = req.body;
+    const { name, description, creator, date, origin, songUrl } = req.body;
     const { id: userId } = req.user;
 
     try {
@@ -156,6 +162,7 @@ async function editSong(req: Request, res: Response, next: NextFunction) {
             creator,
             date,
             origin,
+            songUrl,
             updatedAt: Date.now()
         });
 
