@@ -23,19 +23,18 @@ let songObj = {
         type: String,
         required: [true, "Song name should be at least 2 characters long"],
         minLength: [2, "Song name should be at least 2 characters long"],
-        maxLength: [30, "Song name must not exceed 30 characters"],
+        maxLength: [35, "Song name must not exceed 35 characters"],
     },
     description: {
         type: String,
         required: [true, "Song description should be at least 10 characters long"],
         minLength: [10, "Song description should be at least 10 characters long"],
-        maxLength: [1000, "Song description must not exceed 1000 characters"],
+        maxLength: [5000, "Song description must not exceed 5000 characters"],
     },
     creator: {
         type: String, //todo: remove
-        required: [true, "Song creator name should be at least 2 characters long"],
-        minLength: [2, "Song creator name should be at least 2 characters long"],
-        maxLength: [30, "Song creator name must not exceed 30 characters"],
+        required: [true],
+        maxLength: [100, "Song creator name must not exceed 100 characters"],
     },
     date: {
         type: String,

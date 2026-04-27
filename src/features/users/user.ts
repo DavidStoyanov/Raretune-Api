@@ -36,8 +36,8 @@ let userObj = {
     password: {
         type: String,
         required: [true, "Password should be at least 6 characters long"],
-        minLength: [2, "Password should be at least 6 characters long"],
-        maxLength: [30, "Password must not exceed 255 characters"],
+        minLength: [6, "Password should be at least 6 characters long"],
+        maxLength: [255, "Password must not exceed 255 characters"],
     },
     postedSongs: [{
         type: ObjectId,
